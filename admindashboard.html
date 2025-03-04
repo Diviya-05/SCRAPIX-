@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4CAF50; /* Green color */
+      padding: 20px;
+      background-color: white;
+      margin: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #4CAF50; /* Green color */
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4CAF50; /* Green */
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    img {
+      max-width: 50px;
+      border-radius: 5px;
+    }
+
+    #userList li {
+      background-color: white;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #4CAF50; /* Green accent */
+    }
+
+    #userList li:hover {
+      background-color: #f9f9f9;
+      transform: translateY(-2px);
+      transition: transform 0.2s ease;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      th, td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <div class="container">
+    <!-- User List -->
+    <h2>User List</h2>
+    <ul id="userList"></ul> <!-- List of users will be displayed here -->
+
+    <!-- Scrap Statistics -->
+    <h2>Scrap Statistics</h2>
+    <div class="statistics-section">
+      <h3>Total Scrap Selections</h3>
+      <p id="total-selections">Loading...</p>
+    </div>
+
+    <div class="statistics-section">
+      <h3>Selections by Subcategory</h3>
+      <table id="selections-by-subcategory">
+        <thead>
+          <tr>
+            <th>Subcategory</th>
+            <th>Selection Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="statistics-section">
+      <h3>Most Popular Subcategory</h3>
+      <p id="most-popular-subcategory">Loading...</p>
+    </div>
+
+    <div class="statistics-section">
+      <h3>Recent Selections</h3>
+      <table id="recent-selections">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Subcategory</th>
+            <th>Image</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Scrap Shops -->
+    <h2>Scrap Shops</h2>
+    <table id="scrap-shops-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Contact</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Hardcoded scrap shops data -->
+        <tr>
+          <td>SK Scrap Kanjirapally</td>
+          <td>Kanjirappally, Kerala</td>
+          <td>9876543210</td>
+          <td>We buy and recycle scrap materials.</td>
+        </tr>
+        <tr>
+          <td>Scrap Traders Ettumanoor</td>
+          <td>Ettumanoor, Kerala</td>
+          <td>9847012345</td>
+          <td>Best prices for used metals and plastics.</td>
+        </tr>
+        <tr>
+          <td>PK Scrap Enterprise</td>
+          <td>Kottayam, Kerala</td>
+          <td>9967456789</td>
+          <td>Buying and selling scrap materials at wholesale rates.</td>
+        </tr>
+        <tr>
+          <td>SN Metal Traders</td>
+          <td>Changanassery, Kerala</td>
+          <td>9895123456</td>
+          <td>Trusted name in metal scrap trading.</td>
+        </tr>
+        <tr>
+          <td>Vaiga Steel Idukki</td>
+          <td>Idukki, Kerala</td>
+          <td>9746123456</td>
+          <td>We specialize in steel and iron scrap collection.</td>
+        </tr>
+        <tr>
+          <td>GS Scrap and Metals</td>
+          <td>Thodupuzha, Kerala</td>
+          <td>9072345678</td>
+          <td>Recycling and trading various metal scraps.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Fetch users for admin
+    async function fetchUsers() {
+      try {
+        const response = await fetch('http://localhost:4000/admin/users');
+        const data = await response.json();
+
+        if (data.users) {
+          const userList = document.getElementById('userList');
+          userList.innerHTML = data.users
+            .map(
+              (user) => `
+              <li>Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone}</li>
+            `
+            )
+            .join('');
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        alert('Failed to fetch users');
+      }
+    }
+
+    // Fetch and display scrap statistics
+    async function fetchScrapStatistics() {
+      try {
+        const response = await fetch("http://localhost:4000/api/scrap-statistics");
+        const data = await response.json();
+
+        // Display total selections
+        document.getElementById("total-selections").textContent = data.totalSelections;
+
+        // Display selections by subcategory
+        const subcategoryTable = document.querySelector("#selections-by-subcategory tbody");
+        subcategoryTable.innerHTML = data.selectionsBySubcategory
+          .map(
+            (row) => `
+            <tr>
+              <td>${row.subcategory}</td>
+              <td>${row.selection_count}</td>
+            </tr>
+          `
+          )
+          .join("");
+
+        // Display most popular subcategory
+        document.getElementById("most-popular-subcategory").textContent =
+          data.mostPopularSubcategory || "No data available";
+
+        // Display recent selections
+        const recentSelectionsTable = document.querySelector("#recent-selections tbody");
+        recentSelectionsTable.innerHTML = data.recentSelections
+          .map(
+            (row) => `
+            <tr>
+              <td>${row.email}</td>
+              <td>${row.subcategory}</td>
+              <td><img src="${row.image_path}" alt="Scrap Image"></td>
+              <td>${new Date(row.created_at).toLocaleString()}</td>
+            </tr>
+          `
+          )
+          .join("");
+      } catch (error) {
+        console.error("Error fetching scrap statistics:", error);
+      }
+    }
+
+    // Fetch data on page load
+    fetchUsers();
+    fetchScrapStatistics();
+  </script>
+</body>
+</html>
